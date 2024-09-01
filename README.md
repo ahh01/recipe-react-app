@@ -9,7 +9,7 @@ Currently, two official plugins are available:
 
 ## distribution
 
-### /////////isabelle Lofgren //////////
+### /////////isabelle Lofgren: DOM manipulation och formhantering //////////
 
 #### (formulär hantering)
 
@@ -188,7 +188,7 @@ import React, { useState, useEffect } from 'react';
     }
 ```
 
-### /////////////Joshua Jaup //////////
+### /////////////Joshua Jaup: JSON och Arrayer //////////
 
 #### (moc data)
 
@@ -254,6 +254,16 @@ App.jsx
       })}
 ```
 
+CDN is to much work and next js is to high tech for us.
+
+```css
+.normal-size {
+  width: 300px; /* Set the width to 300 pixels */
+  height: auto; /* Automatically adjust the height to maintain the aspect ratio */
+  object-fit: cover; /* Ensure the image covers the area without stretching */
+}
+```
+
 #### (redigera och radera recept)
 
 - vi manipulerar en array och behöver därför använda array metoder (filter,map, reduce)
@@ -277,7 +287,7 @@ const updateRecipe = (updatedRecipe) => {
 };
 ```
 
-### (betyg sättning och validering) ////////// Erik Jonsson //////////
+### (betyg sättning och validering) ////////// Erik Jonsson: alternativa sätt att programera //////////
 
 #### auto batching (validation) check the updated values
 
@@ -390,17 +400,7 @@ p {
 }
 ```
 
-### //////////Ahmed Abdela//////////
-
-CDN is to much work and next js is to high tech for us.
-
-```css
-.normal-size {
-  width: 300px; /* Set the width to 300 pixels */
-  height: auto; /* Automatically adjust the height to maintain the aspect ratio */
-  object-fit: cover; /* Ensure the image covers the area without stretching */
-}
-```
+### //////////Ahmed Abdela: arrayer server side eller client side //////////
 
 #### basically redux toolkit that update with spread operator
 
