@@ -156,21 +156,33 @@ function App() {
         </button>
       </form>
 
-      {recipes.map((recipe) => (
-        <div key={recipe.idMeal}>
-          <h2>{recipe.strMeal}</h2>
-          <ul>
-            {getIngredients(recipe).map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
-            ))}
-          </ul>
-          <Stars />
-          <h2>Instructions</h2>
-          <p>{recipe.strInstructions}</p>
-          <button onClick={() => handleEditClick(recipe)}>Edit</button>
-          <button onClick={() => deleteRecipe(recipe.idMeal)}>Delete</button>
-        </div>
-      ))}
+      {recipes.map((recipe) => {
+        console.log(recipe);
+
+        return (
+          <div key={recipe.idMeal}>
+            <h2>{recipe.strMeal}</h2>
+            <ul>
+              {getIngredients(recipe).map((ingredient, index) => (
+                <li key={index}>{ingredient}</li>
+              ))}
+            </ul>
+            <Stars />
+            <img
+              src={recipe.strMealThumb}
+              alt={recipe.strMeal}
+              className='normal-size'
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <h2>Instructions</h2>
+            <p>{recipe.strMealThumb}</p>
+            <button onClick={() => handleEditClick(recipe)}>Edit</button>
+            <button onClick={() => deleteRecipe(recipe.idMeal)}>Delete</button>
+          </div>
+        );
+      })}
     </div>
   );
 }

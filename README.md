@@ -45,6 +45,8 @@ Currently, two official plugins are available:
   }, [errors]);
 ```
 
+#### star structure
+
 - uh prettier converted double quote to single quote opsi
 
 ```jsx
@@ -95,5 +97,41 @@ index.css
 p {
   margin-left: 0.5rem;
   margin-bottom: 0;
+}
+```
+
+#### json to image
+
+App.jsx
+
+```js
+ {recipes.map((recipe) => {
+        console.log(recipe);
+
+        return (
+          <div key={recipe.idMeal}>
+           ....
+            <img
+              src={recipe.strMealThumb}
+              alt={recipe.strMeal}
+              className='normal-size'
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <h2>Instructions</h2>
+            <p>{recipe.strMealThumb}</p>
+           ...
+        );
+      })}
+```
+
+CDN is to much work and next js is to high tech for us.
+
+```css
+.normal-size {
+  width: 300px; /* Set the width to 300 pixels */
+  height: auto; /* Automatically adjust the height to maintain the aspect ratio */
+  object-fit: cover; /* Ensure the image covers the area without stretching */
 }
 ```

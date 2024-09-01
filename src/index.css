@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.normal-size {
+  width: 300px; /* Set the width to 300 pixels */
+  height: auto; /* Automatically adjust the height to maintain the aspect ratio */
+  object-fit: cover; /* Ensure the image covers the area without stretching */
+}
+
 .span {
   color: #ffb900;
   font-size: 1rem;
