@@ -193,6 +193,7 @@ import React, { useState, useEffect } from 'react';
 #### (moc data)
 
 - hur ser datan ut. vi kan komma åt dem genom att skriva receipt.idMeal || receipt.["prop"]
+- men det finns fler sätt att komma åt datan ex. return Object.keys(newErrors).length === 0; (Erik pratar om det, men först)
 
 ```json
 {
@@ -225,6 +226,34 @@ import React, { useState, useEffect } from 'react';
 }
 ```
 
+#### happy json to image (image validation)
+
+- the json object contain the url. just insert it in the src attribute
+
+App.jsx
+
+```js
+ {recipes.map((recipe) => {
+        console.log(recipe);
+
+        return (
+          <div key={recipe.idMeal}>
+           ....
+            <img
+              src={recipe.strMealThumb}
+              alt={recipe.strMeal}
+              className='normal-size'
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <h2>Instructions</h2>
+            <p>{recipe.strMealThumb}</p>
+           ...
+        );
+      })}
+```
+
 #### (redigera och radera recept)
 
 - vi manipulerar en array och behöver därför använda array metoder (filter,map, reduce)
@@ -252,6 +281,7 @@ const updateRecipe = (updatedRecipe) => {
 
 #### auto batching (validation) check the updated values
 
+- finns mer att prata om än bara objekt och arrayer. vi har många alternativ
 - attribut är bra men det finns många sätt att validera att rätt data skickas till arrayer på clienten eller serven
 - fel meddlande vill vi inte visa förevigt. vi kan använda oss av en clean up f() i useEffect för att bara visa feedback några sekunder.
 
@@ -314,6 +344,7 @@ function App() {
 Stars.jsx
 
 - basic star logic if we did not need to match locally
+- notera [ <div className='stars'>{tempStars}</div>] vi kan returnera en array av sjärnor
 
 ```jsx
 import React from 'react';
@@ -345,6 +376,8 @@ export default Stars;
 
 index.css
 
+- åtkomst till classer och element (JSX är det className)
+
 ```css
 .span {
   color: #ffb900;
@@ -358,34 +391,6 @@ p {
 ```
 
 ### //////////Ahmed Abdela//////////
-
-#### happy json to image (image validation)
-
-- the json object contain the url. just insert it in the src attribute
-
-App.jsx
-
-```js
- {recipes.map((recipe) => {
-        console.log(recipe);
-
-        return (
-          <div key={recipe.idMeal}>
-           ....
-            <img
-              src={recipe.strMealThumb}
-              alt={recipe.strMeal}
-              className='normal-size'
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-            <h2>Instructions</h2>
-            <p>{recipe.strMealThumb}</p>
-           ...
-        );
-      })}
-```
 
 CDN is to much work and next js is to high tech for us.
 
