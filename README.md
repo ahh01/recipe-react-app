@@ -100,7 +100,7 @@ p {
 }
 ```
 
-#### json to image
+#### happy json to image
 
 App.jsx
 
@@ -134,4 +134,70 @@ CDN is to much work and next js is to high tech for us.
   height: auto; /* Automatically adjust the height to maintain the aspect ratio */
   object-fit: cover; /* Ensure the image covers the area without stretching */
 }
+```
+
+####
+
+```js
+const [ratedStars, setRatedStars] = useState([]);
+
+const setRatedStarMatchingReceipId = (obj) => {
+  console.log(obj);
+
+  setRatedStars((prevRatedStars) => {
+    // Check if the object with the same matchingId exists
+    const existingIndex = prevRatedStars.findIndex(
+      (item) => item.matchingId === obj.matchingId
+    );
+
+    if (existingIndex !== -1) {
+      // If it exists, replace the existing object with the new one
+      const updatedRatedStars = [...prevRatedStars];
+      updatedRatedStars[existingIndex] = obj;
+      return updatedRatedStars;
+    } else {
+      // If it doesn't exist, push the new object into the array
+      return [...prevRatedStars, obj];
+    }
+  });
+  console.log(ratedStars);
+};
+
+return (
+  <Stars
+    setRatedStarMatchingReceipId={setRatedStarMatchingReceipId}
+    ratedStars={ratedStars}
+    matchingId={recipe.idMeal}
+  />
+);
+```
+
+Stars.jsx
+
+```jsx
+const Stars = ({
+  stars = 0,
+  setRatedStarMatchingReceipId,
+  ratedStars,
+  matchingId,
+}) => {
+  return (
+    <button
+      key={index}
+      onClick={() => {
+        setRatedStarMatchingReceipId({ index, matchingId });
+      }}
+    >
+      <span>
+        {stars > number ? (
+          <BsStarFill />
+        ) : stars > index ? (
+          <BsStarHalf />
+        ) : (
+          <BsStar />
+        )}
+      </span>
+    </button>
+  );
+};
 ```

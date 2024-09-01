@@ -13,6 +13,7 @@ function App() {
   });
 
   const [errors, setErrors] = useState({});
+  const [ratedStars, setRatedStars] = useState([]);
 
   // Load recipes from localStorage or fetch from API if not available
   useEffect(() => {
@@ -33,7 +34,6 @@ function App() {
       const data = await response.json();
       const fetchedRecipes = data.meals || [];
       setRecipes(fetchedRecipes);
-      console.log(fetchedRecipes);
       localStorage.setItem('recipes', JSON.stringify(fetchedRecipes));
     } catch (error) {
       console.error('Failed to fetch recipes', error);
@@ -125,6 +125,27 @@ function App() {
       .map(([key, value]) => value);
   };
 
+  const setRatedStarMatchingReceipId = (obj) => {
+    console.log(obj);
+
+    setRatedStars((prevRatedStars) => {
+      // Check if the object with the same matchingId exists
+      const existingIndex = prevRatedStars.findIndex(
+        (item) => item.matchingId === obj.matchingId
+      );
+
+      if (existingIndex !== -1) {
+        // If it exists, replace the existing object with the new one
+        const updatedRatedStars = [...prevRatedStars];
+        updatedRatedStars[existingIndex] = obj;
+        return updatedRatedStars;
+      } else {
+        // If it doesn't exist, push the new object into the array
+        return [...prevRatedStars, obj];
+      }
+    });
+    console.log(ratedStars);
+  };
   return (
     <div>
       <h1>Recipes</h1>
@@ -157,8 +178,6 @@ function App() {
       </form>
 
       {recipes.map((recipe) => {
-        console.log(recipe);
-
         return (
           <div key={recipe.idMeal}>
             <h2>{recipe.strMeal}</h2>
@@ -167,7 +186,11 @@ function App() {
                 <li key={index}>{ingredient}</li>
               ))}
             </ul>
-            <Stars />
+            <Stars
+              setRatedStarMatchingReceipId={setRatedStarMatchingReceipId}
+              ratedStars={ratedStars}
+              matchingId={recipe.idMeal}
+            />
             <img
               src={recipe.strMealThumb}
               alt={recipe.strMeal}
