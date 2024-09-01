@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import RecipeForm from './RecipeForm';
 // import RecipeList from './RecipeList';
-
+import Stars from './Components/Stars';
 function App() {
   const [recipes, setRecipes] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +11,7 @@ function App() {
     strInstructions: '',
     strIngredient1: '',
   });
+
   const [errors, setErrors] = useState({});
 
   // Load recipes from localStorage or fetch from API if not available
@@ -32,6 +33,7 @@ function App() {
       const data = await response.json();
       const fetchedRecipes = data.meals || [];
       setRecipes(fetchedRecipes);
+      console.log(fetchedRecipes);
       localStorage.setItem('recipes', JSON.stringify(fetchedRecipes));
     } catch (error) {
       console.error('Failed to fetch recipes', error);
@@ -162,6 +164,7 @@ function App() {
               <li key={index}>{ingredient}</li>
             ))}
           </ul>
+          <Stars />
           <h2>Instructions</h2>
           <p>{recipe.strInstructions}</p>
           <button onClick={() => handleEditClick(recipe)}>Edit</button>

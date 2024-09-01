@@ -46,3 +46,54 @@ Currently, two official plugins are available:
 ```
 
 - uh prettier converted double quote to single quote opsi
+
+```jsx
+import Stars from './Components/Stars';
+function App() {
+  return <Stars />;
+}
+```
+
+Stars.jsx
+
+```jsx
+import React from 'react';
+import { BsStarFill, BsStarHalf, BsStar } from 'react-icons/bs';
+const Stars = ({ stars = 0, reviews }) => {
+  const tempStars = Array.from({ length: 5 }, (_, index) => {
+    const number = index + 0.5;
+    return (
+      <span key={index}>
+        {stars > number ? (
+          <BsStarFill />
+        ) : stars > index ? (
+          <BsStarHalf />
+        ) : (
+          <BsStar />
+        )}
+      </span>
+    );
+  });
+  return (
+    <div className='stars'>
+      <div className='stars'>{tempStars}</div>
+      <p className='reviews'>({reviews} customer reviews)</p>
+    </div>
+  );
+};
+export default Stars;
+```
+
+index.css
+
+```css
+.span {
+  color: #ffb900;
+  font-size: 1rem;
+  margin-right: 0.25rem;
+}
+p {
+  margin-left: 0.5rem;
+  margin-bottom: 0;
+}
+```
