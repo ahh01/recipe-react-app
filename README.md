@@ -7,7 +7,262 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## distribution
+
+### /////////isabelle Lofgren //////////
+
+#### (formulär hantering)
+
+- en constant är ofarlig kanske den kan användas i en effekt hmm.
+- skickar form data i ett objekt, finns ingen anledning att använda fler useState
+
 ```jsx
+ const [isEditing, setIsEditing] = useState(false);
+  const [currentRecipe, setCurrentRecipe] = useState({
+    idMeal: "",
+    strMeal: "",
+    strInstructions: "",
+    strIngredient1: "",
+  });
+
+      const storedRecipes = JSON.parse(localStorage.getItem("recipes"));
+    if (storedRecipes) {
+      setRecipes(storedRecipes);
+    } else {
+      fetchRecipes();
+    }
+  }, []);
+```
+
+- form datan måste återställas så att man kan skriva ett nytt objekt för att skicka till local storage eller api på serven för att den ska hanteras ordentligt
+
+```jsx
+// Function to fetch recipes from the API
+async function fetchRecipes() {
+  try {
+    const response = await fetch(
+      'https://www.themealdb.com/api/json/v1/1/search.php?s='
+    );
+    const data = await response.json();
+    const fetchedRecipes = data.meals || [];
+    setRecipes(fetchedRecipes);
+    localStorage.setItem('recipes', JSON.stringify(fetchedRecipes));
+  } catch (error) {
+    console.error('Failed to fetch recipes', error);
+  }
+}
+
+// Function to add a new recipe
+const addRecipe = (newRecipe) => {
+  const updatedRecipes = [...recipes, newRecipe];
+  setRecipes(updatedRecipes);
+  localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+};
+
+// Handle form submission for adding/updating a recipe
+const handleFormSubmit = (e) => {
+  e.preventDefault();
+  if (isEditing) {
+    updateRecipe(currentRecipe);
+  } else {
+    addRecipe({ ...currentRecipe, idMeal: Date.now().toString() });
+  }
+  setIsEditing(false);
+  setCurrentRecipe({
+    idMeal: '',
+    strMeal: '',
+    strInstructions: '',
+    strIngredient1: '',
+  });
+};
+```
+
+- finns många små problem som måste lösas för Key:value mönster i ett objekt
+- jsx omvandlas till html via innerHTML eller mer kompliserade metoder
+
+```jsx
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    setCurrentRecipe({
+      ...currentRecipe,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Populate the form with the selected recipe's details for editing
+  const handleEditClick = (recipe) => {
+    setIsEditing(true);
+    setCurrentRecipe(recipe);
+  };
+
+  const getIngredients = (recipe) => {
+    return Object.entries(recipe)
+      .filter(([key, value]) => key.startsWith("strIngredient") && value)
+      .map(([key, value]) => value);
+  };
+
+  return(
+     <div>
+      <h1>Recipes</h1>
+      <form onSubmit={handleFormSubmit}>
+        <input
+          type="text"
+          name="strMeal"
+          placeholder="Recipe Title"
+          value={currentRecipe.strMeal}
+          onChange={handleInputChange}
+          required
+        />
+        <textarea
+          name="strInstructions"
+          placeholder="Instructions"
+          value={currentRecipe.strInstructions}
+          onChange={handleInputChange}
+          required
+        />
+        <input
+          type="text"
+          name="strIngredient1"
+          placeholder="Main Ingredient"
+          value={currentRecipe.strIngredient1}
+          onChange={handleInputChange}
+        />
+        <button type="submit">{isEditing ? "Update Recipe" : "Add Recipe"}</button>
+      </form>
+
+      {recipes.map((recipe) => (
+        <div key={recipe.idMeal}>
+          <h2>{recipe.strMeal}</h2>
+          <ul>
+            {getIngredients(recipe).map((ingredient, index) => (
+              <li key={index}>{ingredient}</li>
+            ))}
+          </ul>
+          <h2>Instructions</h2>
+          <p>{recipe.strInstructions}</p>
+          <button onClick={() => handleEditClick(recipe)}>Edit</button>
+          <button onClick={() => deleteRecipe(recipe.idMeal)}>Delete</button>
+        </div>
+      ))}
+  )
+```
+
+#### (api integration)
+
+- fetch on waterfall. effekten sker då app komponenten aktiveras i main.jsx. det tar tid att hämta och omvandla datan till hanterbar data som vi har åtkomst till i en array
+
+```jsx
+import React, { useState, useEffect } from 'react';
+
+ const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch recipes from TheMealDB API
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        setRecipes(data.meals || []);  // Handle cases where no meals are returned
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch recipes');
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
+
+    return( <div className="container">
+      <h1>Recipe App</h1>
+      {/* <RecipeForm onSave={addOrUpdateRecipe} />
+      <RecipeList recipes={recipes} onEdit={addOrUpdateRecipe} onDelete={deleteRecipe} /> */}
+    </div>
+  )
+    }
+```
+
+### /////////////Joshua Jaup //////////
+
+#### (moc data)
+
+- hur ser datan ut. vi kan komma åt dem genom att skriva receipt.idMeal || receipt.["prop"]
+
+```json
+{
+    "meals": [
+      {
+        "idMeal": "52977",
+        "strMeal": "Corba",
+        "strDrinkAlternate": null,
+        "strCategory": "Side",
+        "strArea": "Turkish",
+        "strInstructions": "Boil the meat and then shred it into smaller pieces...",
+        "strMealThumb": "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
+        "strTags": "Soup",
+        "strYoutube": "https://www.youtube.com/watch?v=VVnZd8A84z4",
+        "strIngredient1": "Lamb",
+        "strIngredient2": "Onion",
+        "strIngredient3": "Tomatoes",
+        "strIngredient4": "Lemon",
+        "strIngredient5": "Pepper",
+        "strMeasure1": "200g",
+        "strMeasure2": "1",
+        "strMeasure3": "2",
+        "strMeasure4": "1",
+        "strMeasure5": "1 tsp",
+        "strSource": "https://www.themealdb.com/meal/52977",
+        "rating": 4
+      },
+      ...
+    ]
+}
+```
+
+#### (redigera och radera recept)
+
+- vi manipulerar en array och behöver därför använda array metoder (filter,map, reduce)
+- när vi reloadar brukar det vara bra att inte hämta all data igen
+
+```jsx
+// Function to delete a recipe
+const deleteRecipe = (idMeal) => {
+  const updatedRecipes = recipes.filter((recipe) => recipe.idMeal !== idMeal);
+  setRecipes(updatedRecipes);
+  localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+};
+
+// Function to update an existing recipe
+const updateRecipe = (updatedRecipe) => {
+  const updatedRecipes = recipes.map((recipe) =>
+    recipe.idMeal === updatedRecipe.idMeal ? updatedRecipe : recipe
+  );
+  setRecipes(updatedRecipes);
+  localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+};
+```
+
+### (betyg sättning och validering) ////////// Erik Jonsson //////////
+
+#### auto batching (validation) check the updated values
+
+- attribut är bra men det finns många sätt att validera att rätt data skickas till arrayer på clienten eller serven
+- fel meddlande vill vi inte visa förevigt. vi kan använda oss av en clean up f() i useEffect för att bara visa feedback några sekunder.
+
+```jsx
+  const [currentRecipe, setCurrentRecipe] = useState({
+    idMeal: '',
+    strMeal: '',
+    strInstructions: '',
+    strIngredient1: '',
+  });
+
   const [errors, setErrors] = useState({});
 
     const validateForm = () => {
@@ -45,7 +300,7 @@ Currently, two official plugins are available:
   }, [errors]);
 ```
 
-#### star structure
+#### star structure with (props)
 
 - uh prettier converted double quote to single quote opsi
 
@@ -57,6 +312,8 @@ function App() {
 ```
 
 Stars.jsx
+
+- basic star logic if we did not need to match locally
 
 ```jsx
 import React from 'react';
@@ -100,7 +357,11 @@ p {
 }
 ```
 
-#### happy json to image
+### //////////Ahmed Abdela//////////
+
+#### happy json to image (image validation)
+
+- the json object contain the url. just insert it in the src attribute
 
 App.jsx
 
@@ -136,7 +397,9 @@ CDN is to much work and next js is to high tech for us.
 }
 ```
 
-####
+#### basically redux toolkit that update with spread operator
+
+- what to only update one of many objects. find it and if it exist update. otherwise push
 
 ```js
 const [ratedStars, setRatedStars] = useState([]);
@@ -201,6 +464,11 @@ const Stars = ({
   );
 };
 ```
+
+#### update object is correct and match the updated object
+
+- vi har en array från serven och en från clienten. för att veta vilka objekt som hör ihop kan vi match id.
+- om vi använder server id för att skapa objekt på klienden kan vi nästa gång skärmen byggs upp visa att vi tryckt på sjärnorna utan att serven vet om det
 
 ```jsx
 const Stars = ({
