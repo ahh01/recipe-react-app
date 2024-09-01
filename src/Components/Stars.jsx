@@ -6,7 +6,14 @@ const Stars = ({
   setRatedStarMatchingReceipId,
   ratedStars,
   matchingId,
-}) => {
+}) => { console.log(ratedStars, matchingId)
+  
+  let updatedStars = stars
+  if ( ratedStars.matchingId == matchingId)
+  {
+     updatedStars = ratedStars.index
+  } 
+   
   const tempStars = Array.from({ length: 5 }, (_, index) => {
     const number = index + 0.5;
     return (
@@ -17,9 +24,9 @@ const Stars = ({
         }}
       >
         <span>
-          {stars > number ? (
+          {updatedStars > number ? (
             <BsStarFill />
-          ) : stars > index ? (
+          ) : updatedStars > index ? (
             <BsStarHalf />
           ) : (
             <BsStar />
