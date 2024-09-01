@@ -201,3 +201,35 @@ const Stars = ({
   );
 };
 ```
+
+```jsx
+const Stars = ({
+  stars = 0,
+  setRatedStarMatchingReceipId,
+  ratedStars,
+  matchingId,
+}) => {
+  const matchedRating = ratedStars.find(
+    (rating) => rating.matchingId == matchingId
+  )
+  //ratedStars && ratedStars.matchingId == matchingId
+  if (matchedRating) {
+    console.log(matchedRating.indexStartFromZeroButValueFromOne)
+    updatedStars = matchedRating.indexStartFromZeroButValueFromOne
+  }
+
+//from array
+   return (
+      <button
+        key={index}
+        onClick={() => {
+          setRatedStarMatchingReceipId({ index, matchingId });
+          const indexStartFromZeroButValueFromOne = index + 1;
+          setRatedStarMatchingReceipId({
+            indexStartFromZeroButValueFromOne,
+            matchingId,
+          });
+        }}
+   )
+}
+```

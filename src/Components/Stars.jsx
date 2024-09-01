@@ -6,27 +6,34 @@ const Stars = ({
   setRatedStarMatchingReceipId,
   ratedStars,
   matchingId,
-}) => { console.log(ratedStars, matchingId)
-  
-  let updatedStars = stars
-  if ( ratedStars.matchingId == matchingId)
-  {
-     updatedStars = ratedStars.index
-  } 
-   
+}) => {
+  let updatedStars = stars;
+  const matchedRating = ratedStars.find(
+    (rating) => rating.matchingId == matchingId
+  );
+  //ratedStars && ratedStars.matchingId == matchingId
+  if (matchedRating) {
+    console.log(matchedRating.indexStartFromZeroButValueFromOne);
+    updatedStars = matchedRating.indexStartFromZeroButValueFromOne;
+  }
+
   const tempStars = Array.from({ length: 5 }, (_, index) => {
     const number = index + 0.5;
     return (
       <button
         key={index}
         onClick={() => {
-          setRatedStarMatchingReceipId({ index, matchingId });
+          const indexStartFromZeroButValueFromOne = index + 1;
+          setRatedStarMatchingReceipId({
+            indexStartFromZeroButValueFromOne,
+            matchingId,
+          });
         }}
       >
         <span>
           {updatedStars > number ? (
             <BsStarFill />
-          ) : updatedStars > index ? (
+          ) : updatedStars > index + 1 ? (
             <BsStarHalf />
           ) : (
             <BsStar />
